@@ -1,10 +1,11 @@
 
-import Stack from "./stack.js";
+// import Stack from "./stack.js";
+import Queue from "./Queue.js";
 
-const stack = new Stack(1,2,3,4)
-stack.pop()
-stack.push('Hello World!')
+const queue = new Queue(1,2,3)
 
-console.log(stack[3])
+queue.push('Hello World!')
 
-stack.forEach(value => console.log(value))
+queue.forEach(value => console.log(value))
+
+console.log(queue)

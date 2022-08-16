@@ -13,6 +13,10 @@ class Stack {
     }
 
     pop() {
+        if (!this.length) {
+            return undefined
+        }
+
         this.length--
         const result = this[this.length]
         delete this[this.length]
