@@ -6,3 +6,5 @@ stack.pop()
 stack.push('Hello World!')
 
 console.log(stack[3])
+
+stack.forEach(value => console.log(value))

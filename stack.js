@@ -13,11 +13,17 @@ class Stack {
     }
 
     pop() {
-        const result = this[this.length-1]
-        delete this[this.length-1]
         this.length--
+        const result = this[this.length]
+        delete this[this.length]
 
         return result
+    }
+
+    forEach(callback) {
+        for (let i = 0; i < this.length; i++) {
+            callback(this[i])
+        }
     }
 }
 
