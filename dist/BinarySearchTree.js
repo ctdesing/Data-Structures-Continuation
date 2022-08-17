@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var Queue_1 = require("./Queue");
 var Node = /** @class */ (function () {
     function Node(value) {
         this.value = value;
@@ -82,6 +83,64 @@ var BinarySearchTree = /** @class */ (function () {
                 return true;
             }
         }
+    };
+    BinarySearchTree.prototype.flatten = function () {
+        return this.flattenDFRInOrder();
+    };
+    BinarySearchTree.prototype.flattenBreadthFirst = function () {
+        var result = [];
+        var queue = new Queue_1.default();
+        queue.push(this.root);
+        while (queue.size) {
+            var next = queue.pop();
+            result.push(next.value);
+            if (next.left !== null) {
+                queue.push(next.left);
+            }
+            if (next.right !== null) {
+                queue.push(next.right);
+            }
+        }
+        return result;
+    };
+    /* 0.1ms faster */
+    BinarySearchTree.prototype.flattenDepthFirstRecursively = function () {
+        var result = [];
+        var recursion = function (node) {
+            if (!node) {
+                return;
+            }
+            result.push(node.value);
+            return recursion(node.left) + recursion(node.right);
+        };
+        recursion(this.root);
+        return result;
+    };
+    BinarySearchTree.prototype.flattenDFRPostOrder = function () {
+        var result = [];
+        var recursion = function (node) {
+            if (!node) {
+                return 1;
+            }
+            var process = recursion(node.left) + recursion(node.right);
+            result.push(node.value);
+            return process;
+        };
+        recursion(this.root);
+        return result;
+    };
+    BinarySearchTree.prototype.flattenDFRInOrder = function () {
+        var result = [];
+        var recursion = function (node) {
+            if (!node) {
+                return;
+            }
+            recursion(node.left);
+            result.push(node.value);
+            recursion(node.right);
+        };
+        recursion(this.root);
+        return result;
     };
     return BinarySearchTree;
 }());

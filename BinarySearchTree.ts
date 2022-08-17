@@ -1,3 +1,4 @@
+import Queue from "./Queue";
 
 class Node {
     value: any
@@ -77,7 +78,76 @@ class BinarySearchTree {
                 return true
             }
         }
+    }
 
+    flatten() {
+        return this.flattenDFRInOrder()
+    }
+
+    flattenBreadthFirst() {
+        let result = []
+        let queue = new Queue()
+        queue.push(this.root)
+
+        while(queue.size) {
+            let next = queue.pop()
+            result.push(next.value)
+            if (next.left !== null) {
+                queue.push(next.left)
+            }
+            if (next.right !== null) {
+                queue.push(next.right)
+            }
+        }
+        return result
+    }
+
+    /* 0.1ms faster */
+    flattenDepthFirstRecursively() {
+        let result = []
+        const recursion = (node) => {
+            if (!node) {
+                return
+            }
+
+            result.push(node.value)
+            return recursion(node.left) + recursion(node.right)
+        }
+
+        recursion(this.root)
+        return result
+    }
+
+    flattenDFRPostOrder() {
+        let result = []
+        const recursion = (node) => {
+            if (!node) {
+                return 1
+            }
+
+            let process = recursion(node.left) + recursion(node.right)
+            result.push(node.value)
+            return process
+        }
+
+        recursion(this.root)
+        return result
+    }
+
+    flattenDFRInOrder() {
+        let result = []
+        const recursion = (node) => {
+            if (!node) {
+                return
+            }
+
+            recursion(node.left)
+            result.push(node.value)
+            recursion(node.right)
+        }
+
+        recursion(this.root)
+        return result
     }
 
     // to be implemented
