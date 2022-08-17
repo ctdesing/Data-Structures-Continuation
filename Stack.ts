@@ -1,5 +1,7 @@
 
 class Stack {
+    length: number
+
     constructor(...values) {
         this.length = 0
 
@@ -24,7 +26,7 @@ class Stack {
         return result
     }
 
-    forEach(callback) {
+    forEach(callback: Function) {
         for (let i = 0; i < this.length; i++) {
             callback(this[i])
         }

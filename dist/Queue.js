@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var Node = /** @class */ (function () {
     function Node(value) {
         this.val = value;
@@ -62,4 +62,4 @@ var Queue = /** @class */ (function () {
     };
     return Queue;
 }());
-exports["default"] = Queue;
+exports.default = Queue;
