@@ -1,5 +1,5 @@
 
-class Node {
+export class Node {
     val: any
     next: Node | null
 

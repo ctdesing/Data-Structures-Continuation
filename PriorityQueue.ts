@@ -1,54 +1,93 @@
-import { swap } from "./swap";
+import {PriorityNode} from "./PriorityNode";
 
-class Node {
-    val: any
-    priority: number
-
-    constructor(val, priority) {
-        this.val = val
-        this.priority = priority
-    }
+export const Swap = (parent, child) => {
+    let tempVal = parent.val
+    let tempPriority = parent.priority
+    parent.val = child.val
+    parent.priority = child.priority
+    child.val = tempVal
+    child.priority = tempPriority
 }
 
 class PriorityQueue {
-    values: Array<Node>
+    next: PriorityNode | null
+    last: PriorityNode | null
+    size: number
 
-    constructor(...values) {
-        this.values = []
-
-        values.forEach(val => this.insert(val, 0))
+    constructor() {
+        this.next = null
+        this.last = null
+        this.size = 0
     }
 
-    insert(val, priority): PriorityQueue {
-        const node = new Node(val, priority)
-        this.values.push(node)
-
-        for (let i = this.values.length-1; Math.floor((i-2)/2) > -1; i = Math.floor((i-1)/2)) {
-            const parent = Math.floor((i-2)/2)
-            if (this.values[i].priority < this.values[parent].priority) {
-                swap(this.values, i, parent)
-            }
+    push(value, priority) {
+        this.size++
+        if (!this.next) {
+            this.next = new PriorityNode(value, priority)
+            this.last = this.next
+            return
         }
-        return this
+
+        this.last.next = new PriorityNode(value, priority)
+        this.last = this.last.next
+        this.sort()
     }
 
-    remove(): any {
-        if (this.values.length < 2) {
-            return this.values.pop().val
+    pop(): PriorityNode {
+        if (!this.next) {
+            return undefined
         }
 
-        const result = this.values.splice(0, 1, this.values.pop())[0]
-        for (let i = 0; Math.floor(i*2+1) < this.values.length; i = Math.floor(i*2+1)) {
-            let child = Math.floor(i*2+1)
-            if (child+1 < this.values.length && this.values[child+1].priority < this.values[child].priority) {
-                child++
+        const result = this.next.val
+        this.next = this.next.next
+        if (!this.next) {
+            this.last = this.next
+        }
+        this.size--
+
+        return result
+    }
+
+    sort() {
+        let child = this.next
+        let parent = this.next
+        child = child.next
+
+        const bubbleSort = (swap = false) => {
+            if (child === null) {
+                if (swap) {
+                    child = this.next
+                    parent = this.next
+                    child = child.next
+
+                    return bubbleSort()
+                }
+
+                return
             }
 
-            if (this.values[child].priority < this.values[i].priority) {
-                swap(this.values, child, i)
+            if (child.priority < parent.priority) {
+                Swap(parent, child)
+                swap = true
             }
+
+            parent = parent.next
+            child = child.next
+
+            bubbleSort(swap)
         }
-        return result.val
+
+        bubbleSort()
+    }
+
+    forEach(callback: Function) {
+        if (!this.next) {
+            return
+        }
+        let print = this.next
+        for (; print !== null; print = print.next) {
+            callback(print.val)
+        }
     }
 }
 

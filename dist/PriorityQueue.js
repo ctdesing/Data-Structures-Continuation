@@ -1,49 +1,79 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var swap_1 = require("./swap");
-var Node = /** @class */ (function () {
-    function Node(val, priority) {
-        this.val = val;
-        this.priority = priority;
-    }
-    return Node;
-}());
+exports.Swap = void 0;
+var PriorityNode_1 = require("./PriorityNode");
+var Swap = function (parent, child) {
+    var tempVal = parent.val;
+    var tempPriority = parent.priority;
+    parent.val = child.val;
+    parent.priority = child.priority;
+    child.val = tempVal;
+    child.priority = tempPriority;
+};
+exports.Swap = Swap;
 var PriorityQueue = /** @class */ (function () {
     function PriorityQueue() {
-        var values = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            values[_i] = arguments[_i];
-        }
-        var _this = this;
-        this.values = [];
-        values.forEach(function (val) { return _this.insert(val, 0); });
+        this.next = null;
+        this.last = null;
+        this.size = 0;
     }
-    PriorityQueue.prototype.insert = function (val, priority) {
-        var node = new Node(val, priority);
-        this.values.push(node);
-        for (var i = this.values.length - 1; Math.floor((i - 2) / 2) > -1; i = Math.floor((i - 1) / 2)) {
-            var parent_1 = Math.floor((i - 2) / 2);
-            if (this.values[i].priority < this.values[parent_1].priority) {
-                (0, swap_1.swap)(this.values, i, parent_1);
-            }
+    PriorityQueue.prototype.push = function (value, priority) {
+        this.size++;
+        if (!this.next) {
+            this.next = new PriorityNode_1.PriorityNode(value, priority);
+            this.last = this.next;
+            return;
         }
-        return this;
+        this.last.next = new PriorityNode_1.PriorityNode(value, priority);
+        this.last = this.last.next;
+        this.sort();
     };
-    PriorityQueue.prototype.remove = function () {
-        if (this.values.length < 2) {
-            return this.values.pop().val;
+    PriorityQueue.prototype.pop = function () {
+        if (!this.next) {
+            return undefined;
         }
-        var result = this.values.splice(0, 1, this.values.pop())[0];
-        for (var i = 0; Math.floor(i * 2 + 1) < this.values.length; i = Math.floor(i * 2 + 1)) {
-            var child = Math.floor(i * 2 + 1);
-            if (child + 1 < this.values.length && this.values[child + 1].priority < this.values[child].priority) {
-                child++;
-            }
-            if (this.values[child].priority < this.values[i].priority) {
-                (0, swap_1.swap)(this.values, child, i);
-            }
+        var result = this.next.val;
+        this.next = this.next.next;
+        if (!this.next) {
+            this.last = this.next;
         }
-        return result.val;
+        this.size--;
+        return result;
+    };
+    PriorityQueue.prototype.sort = function () {
+        var _this = this;
+        var child = this.next;
+        var parent = this.next;
+        child = child.next;
+        var bubbleSort = function (swap) {
+            if (swap === void 0) { swap = false; }
+            if (child === null) {
+                if (swap) {
+                    child = _this.next;
+                    parent = _this.next;
+                    child = child.next;
+                    return bubbleSort();
+                }
+                return;
+            }
+            if (child.priority < parent.priority) {
+                (0, exports.Swap)(parent, child);
+                swap = true;
+            }
+            parent = parent.next;
+            child = child.next;
+            bubbleSort(swap);
+        };
+        bubbleSort();
+    };
+    PriorityQueue.prototype.forEach = function (callback) {
+        if (!this.next) {
+            return;
+        }
+        var print = this.next;
+        for (; print !== null; print = print.next) {
+            callback(print.val);
+        }
     };
     return PriorityQueue;
 }());
